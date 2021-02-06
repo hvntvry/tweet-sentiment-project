@@ -16,6 +16,7 @@ class User:
 
     # grants access to the twitter api by using the various keys, sets the attribute api for the tweet class to use
     def set_api(self):
-        auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret)
+        auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret, callback_url)
         auth.set_access_token(self.access_token, self.access_secret)
         self.api = tweepy.API(auth)
+        
