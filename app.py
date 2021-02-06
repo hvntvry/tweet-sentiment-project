@@ -152,10 +152,7 @@ try:
             # this section takes all of the corrections, makes a dataframe, partial fits as new training data
             new_data = {'Text': text, 'Sentiment': sentiment}
             new_train_data = pd.DataFrame(new_data)
-            counter = 0
-            while counter < 500:
-                current_model.partial_fit(new_train_data['Text'], new_train_data['Sentiment'])
-                counter = counter + 1
+            current_model.partial_fit(new_train_data['Text'], new_train_data['Sentiment'])
             joblib.dump(current_model, 'model.pkl') # updating pickled model
 
     # Functionality to download csv (https://discuss.streamlit.io/t/file-download-workaround-added-to-awesome-streamlit-org/1244)
