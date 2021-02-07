@@ -160,6 +160,7 @@ try:
                 current_model.partial_fit(new_train_data['Text'], new_train_data['Sentiment'])
                 counter = counter + 1
             joblib.dump(current_model, 'model.pkl') # updating pickled model
+            joblib.dump(current_model, 'updated_model.pkl')
 
     # Functionality to download csv (https://discuss.streamlit.io/t/file-download-workaround-added-to-awesome-streamlit-org/1244)
     with col2:
