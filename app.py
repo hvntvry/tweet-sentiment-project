@@ -16,11 +16,11 @@ import re
 st.title('Tweet Reply Sentiment Extraction')
 with st.beta_expander('Application Information'):
     st.markdown('''This is a tweet reply sentiment extractor, and it will assist in retrieving
-            the general reaction to a tweet by determining whether a reply is positive or negative.
+            the general reaction of a user by determining whether the most recent replies are positive, neutral or negative.
             It is not able to utilize the hashtags, gifs or photos of the replies. It is encouraged
             to use this tool to get an overall picture of the data, and then to explore specific examples (you can explore
             the tweets using the key word tool below!).
-            However, you can help improve its performance when you correct errors in the error correction window.\n
+            You can help improve its performance when you correct errors in the error correction window.\n
             NOTE: Emojis are transformed into text, in order to assist predictions. 
             If you'd like to check more, check out Emojipedia! (link: https://emojipedia.org/) \n
             Examples:
@@ -39,15 +39,15 @@ select_input_method = st.sidebar.selectbox(
 
 
 # function that pull user api information to access tweets
-def twitter_api(N1, N2, N3, N4):
-    current_user = User(N1, N2, N3, N4)
+def twitter_api(N1, N2):
+    current_user = User(N1, N2)
     current_user.set_api()
     return current_user.api
 
 
 # function that takes tweet username, tweet id then scrapes twitter for all of the replies.
-def user_input(username, tweet_id, user):
-    current_tweet = Tweet(username, tweet_id, user)
+def user_input(username, tweet_id, user, tweet_amount):
+    current_tweet = Tweet(username, tweet_id, user, tweet_amount)
     current_tweet.reply_scrape()
     return current_tweet.replies_data
 
@@ -74,25 +74,27 @@ elif select_input_method == 'Twitter API':
     st.sidebar.subheader("API Information:")
     N1 = st.sidebar.text_input('Enter your consumer key:')
     N2 = st.sidebar.text_input('Enter your consumer secret key:')
-    N3 = st.sidebar.text_input('Enter your access token:')
-    N4 = st.sidebar.text_input('Enter your access secret token:')
     try:
-        current_user = twitter_api(N1, N2, N3, N4)
+        current_user = twitter_api(N1, N2)
     except:
         st.warning('Enter your API information.')
 
     st.sidebar.subheader("Tweet Information:")
     username = st.sidebar.text_input("Enter the username:")
-    tweet_id = st.sidebar.text_input("Enter the tweet ID:")
+    tweet_id = st.sidebar.text_input("(Optional) Enter the tweet ID:")
+    tweet_amount = st.sidebar.slider("Amount of tweets:", max_value=1000,
+                                     value=500, step=5)
     try:
-        input_df = user_input(username, tweet_id, current_user)
+        input_df = user_input(username, tweet_id, current_user, tweet_amount)
     except:
         st.warning('Enter your tweet information. If warning persists, double check API information.')
 
     with st.sidebar.beta_expander('More Information'):
         st.markdown('''
-        Api keys and tokens are available to those that have access to twitter developer! (link: https://developer.twitter.com/)\n
-        The username and tweet ID can be found in the URL of the target tweet. Check the photo below for an example:
+        API keys are available to those that have access to twitter developer! (link: https://developer.twitter.com/)\n
+        The username is the user that you want to get the most recent replies from. You can filter the results 
+        for replies to a specific tweet by entering the tweet ID.
+        Check the photo below for an example:
         ''')
         tweet_image = Image.open('tweet_info.jpg')
         st.image(tweet_image, caption='Yellow = username, Orange = tweet ID', use_column_width=True)
@@ -103,6 +105,7 @@ try:
     # initiate text cleaner so that we can convert emojis to text meanings:
     text_cleaner = Text_cleaner()
     input_df['Text'] = input_df.Text.apply(lambda x: text_cleaner.emoji_to_text(x))
+    input_df['Clean'] = input_df.Text.apply(lambda x: text_cleaner.clean_tweet_elements(x))
 
     # predict and add predictions to new Sentiment column:
     prediction = current_model.classify(input_df.Text)
@@ -127,11 +130,11 @@ try:
         error_number = st.text_input("Input row numbers:")
         with st.beta_expander('How to fix errors'):
             st.markdown('''
-            Insert the row number of a tweet with an incorrect sentiment. This will correct your visuals and will help 
-            the application learn to do better! \n
-            Keep all the numbers in the input bar. If you delete one, that tweet will reset to its original sentiment.\n
+            Insert the row number of a tweet, followed by '=' and then the correct sentiment. This will update your 
+            visuals and will help the application to do better next time! \n
+            Keep all the corrections in the input bar. If you delete one, that tweet will reset to its original sentiment.\n
             Input example:\n
-                (1, 4, 20, 32, 7, 9)
+                (1=positive, 4=negative, 20=neutral, 32=negative, 7=neutral, 9=positive) 
             ''')
 
         #changes error by simply flipping sentiment to the opposite.
@@ -152,7 +155,10 @@ try:
             # this section takes all of the corrections, makes a dataframe, partial fits as new training data
             new_data = {'Text': text, 'Sentiment': sentiment}
             new_train_data = pd.DataFrame(new_data)
-            current_model.partial_fit(new_train_data['Text'], new_train_data['Sentiment'])
+            counter = 0
+            while counter < 500:
+                current_model.partial_fit(new_train_data['Text'], new_train_data['Sentiment'])
+                counter = counter + 1
             joblib.dump(current_model, 'model.pkl') # updating pickled model
 
     # Functionality to download csv (https://discuss.streamlit.io/t/file-download-workaround-added-to-awesome-streamlit-org/1244)
