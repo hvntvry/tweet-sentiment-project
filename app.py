@@ -201,8 +201,7 @@ try:
 
     # clean the text to retrieve word frequencies:
     text_cleaner.get_custom_stopwords(custom_stop_words)
-    input_df['Clean'] = input_df.Text.apply(lambda x: text_cleaner.clean(x))
-    input_df['Clean'] = input_df.Clean.apply(lambda x: text_cleaner.clean_tweet_elements(x))
+    input_df['Clean'] = input_df.Clean.apply(lambda x: text_cleaner.clean(x))
 
     # activate Visualize class
     visuals = Visualize(input_df)
