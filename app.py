@@ -133,24 +133,30 @@ try:
             Insert the row number of a tweet, followed by '=' and then the correct sentiment. This will update your 
             visuals and will help the application to do better next time! \n
             Keep all the corrections in the input bar. If you delete one, that tweet will reset to its original sentiment.\n
+            TIPS:\n
+                1. Try to correct neutral replies, as errors tend to occur here more. After correcting a few, normally the model
+                will learn and fix others. (Do this especially if you see a large amount of neutrals in the bargraph below!) \n
+                2. Sometimes, it can be difficult to determine whether a reply is positive, negative or neutral. To keep things 
+                as consistent as possible, ask yourself 'Does this tweet show a positive or negative opinion about the user or tweet?'
+                Neutral replies should be tweets that do not express an opinion about the user or tweet.\n
             Input example:\n
                 (1=positive, 4=negative, 20=neutral, 32=negative, 7=neutral, 9=positive) 
             ''')
-
-        #changes error by simply flipping sentiment to the opposite.
-        if len(error_number) > 0:
-            #error_number = list(map(int, error_number.split(',')))
-            error_number = error_number.split(',')
-            possible_sentiments = 'positive, negative, neutral'
+       
+        #This fixes errors:
+        if len(error_number) > 0: #checks to see if an error has been inputed
+            error_number = error_number.split(',') #splits each error by ','
+            possible_sentiments = 'positive, negative, neutral' #possible corrections
             text = []# will be used to partially fit corrections to model
             sentiment = []# will be used to partially fit corrections to model
+            #this will loop through each error:
             for i in error_number:
-                current_tweet = i.split('=')
-                if re.search(current_tweet[1], possible_sentiments):
-                    input_df['Sentiment'].iloc[int(current_tweet[0])] = current_tweet[1]
-                    text.append(input_df['Text'].iloc[int(current_tweet[0])])
-                    sentiment.append(input_df['Sentiment'].iloc[int(current_tweet[0])])
-                    placeholder.write(input_df)
+                current_tweet = i.split('=') #split current row number from correction by '='
+                if re.search(current_tweet[1], possible_sentiments): #checks to see if correction is in possible corrections
+                    input_df['Sentiment'].iloc[int(current_tweet[0])] = current_tweet[1] #changes to correct sentiment
+                    text.append(input_df['Text'].iloc[int(current_tweet[0])]) #saves tweet for updating the model
+                    sentiment.append(input_df['Sentiment'].iloc[int(current_tweet[0])]) #saves sentiment for updating the model
+                    placeholder.write(input_df) #updates the data window
 
             # this section takes all of the corrections, makes a dataframe, partial fits as new training data
             new_data = {'Text': text, 'Sentiment': sentiment}
