@@ -1,4 +1,4 @@
-# tweet-sentiment-project
+# Tweet Reply Sentiment Application
 This is an application that can scrap twitter replies and predict a sentiment. It also provides various graph visuals. 
 
   ## Installation: 
@@ -33,6 +33,8 @@ You can use the application by going to https://tweet-sentiment-application.hero
     model.pkl = the trained model
     
     model.py = the script used to train and test the model
+    
+    nltk.txt = for Heroku to access stopwords
     
     prediction.py = used in model.py, a class that contains the different sklearn models and their settings
     
