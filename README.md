@@ -3,14 +3,14 @@ This is an application that can scrap twitter replies and predict a sentiment. I
 
   ## Installation: 
 You can use the application by going to https://tweet-sentiment-application.herokuapp.com/. If you'd like to use it locally then download the following files:
-  app.py
-  model.pkl
-  prediction.py
-  text_cleaner.py
-  tweet.py
-  user.py
-  visualizer.py
-  Optional: amazon_test_data.csv
+  app.py,
+  model.pkl,
+  prediction.py,
+  text_cleaner.py,
+  tweet.py,
+  user.py,
+  visualizer.py,
+  Optional: amazon_test_data.csv.
   
   Using a terminal type:
   ```terminal
