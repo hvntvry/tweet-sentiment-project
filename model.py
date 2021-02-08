@@ -10,9 +10,9 @@ from sklearn import metrics
 '''
 Training and pickling of the current model I chose, a SGDclassifier or stochastic gradient descent from sklearn. (see
 the prediction class for more information). In a comparison between Multinomial (Naive Baye's) classifier, support 
-vector classifier and the SGD, all achieved around 70-80% accuracy. The advantage of the SGDclassifier is the ability to 
+vector classifier and the SGD, all achieved around 60-70% accuracy. The advantage of the SGDclassifier is the ability to 
 partial_fit, which I leveraged to allow for online-learning. Hopefully, The model will improve with user feedback, 
-surpassing the 75-80% accuracy.  
+surpassing the general 67% accuracy.  
 '''
 
 data = pd.read_csv('Processed\cleaned_data.csv') # check data explore file for more info
