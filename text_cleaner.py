@@ -25,6 +25,7 @@ class Text_cleaner:
         self.stopwords.extend(self.custom_stopwords)
 
     def clean(self, text):
+        self.stopwords.extend(["'nt","'re"])
         text = nlp(text, disable=['parser', 'ner'])  # why stop parser/ner?
         tokens = [tok.lemma_.lower().strip() for tok in text if
                   tok.lemma_ != '-PRON-']  # what is strip() doing
