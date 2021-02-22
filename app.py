@@ -72,14 +72,13 @@ if select_input_method == 'CVS file':
 
 elif select_input_method == 'Twitter API':
    
-    #st.sidebar.subheader("API Information:")
-    #N1 = st.sidebar.text_input('Enter your consumer key:')
-    #N2 = st.sidebar.text_input('Enter your consumer secret key:')
-    #try:
-        #current_user = twitter_api(N1, N2)
-    #except:
-        #st.warning('Enter your API information.')
-    current_user = twitter_api('D9L2RdTLrKn1vmvYaLSv4UYAS', '58sZWqoel6MtzuhrnUul4BsSLBJ9ylAE3hSALAa5js5QGWeHho')
+    st.sidebar.subheader("API Information:")
+    N1 = st.sidebar.text_input('Enter your consumer key:')
+    N2 = st.sidebar.text_input('Enter your consumer secret key:')
+    try:
+        current_user = twitter_api(N1, N2)
+    except:
+        st.warning('Enter your API information.')
     st.sidebar.subheader("Tweet Information:")
     username = st.sidebar.text_input("Enter the username:")
     tweet_id = st.sidebar.text_input("(Optional) Enter the tweet ID:")
